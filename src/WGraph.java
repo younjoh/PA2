@@ -9,30 +9,67 @@ public class WGraph {
     public int numVertices = 0;
     public int numEdges = 0;
 
-    WGraph(String FName) throws FileNotFoundException {
+    @SuppressWarnings("unchecked")
+	WGraph(String FName) throws FileNotFoundException {
         File f = new File(FName);
         Scanner scan = new Scanner(f);
         
         // Get # of vertices and edges
         this.numVertices = Integer.parseInt(scan.next());
-        this.numEdges = Integer.parseInt(scan.nextLine());
+        this.numEdges = Integer.parseInt(scan.next());
 
-        while (scan.hasNext()){
-            String check = scan.next();
-            System.out.println(check);
+        this.adjacencyList = new LinkedList[numVertices];
+        for (int i = 0; i < numVertices; i++) {
+        	this.adjacencyList[i] = new LinkedList<>();
         }
-        
+
+        int count = 0;
+        while (scan.hasNextLine()) {
+        	// Get next line
+            String[] line = scan.nextLine().split(" ");
+            
+            // Ensure there are 5 numbers
+            if (line.length != 5) {
+            	break;
+            }
+            
+            // Get coordinates and weight
+            int x1 = Integer.parseInt(line[0]);
+            int y1 = Integer.parseInt(line[1]);
+            int x2 = Integer.parseInt(line[2]);
+            int y2 = Integer.parseInt(line[3]);
+            int weight = Integer.parseInt(line[4]);
+            
+            // Make points and edge
+            Point p1 = new Point(x1, y1);
+            Point p2 = new Point(x2, y2);
+            Edge edge = new Edge(p1, p2, weight);
+            
+            // Add this to Adjacency list
+            this.adjacencyList[count].addFirst(edge);
+            count++;
+            
+        }
         scan.close();
-        System.out.println(this.numVertices);
-        System.out.println(this.numEdges);
+    }
+    
+    public void printGraph() {
+    	for (int i = 0; i < this.numVertices ; i++) {
+    		LinkedList<Edge> list = this.adjacencyList[i];
+    		for (int j = 0; j < list.size(); j++) {    			
+    			System.out.println(list.get(j));
+    		}
+        }
     }
 
     private class Edge {
         public Point source;
         public Point destination;
-		Edge(Point x, Point y) {
+        public int weight;
+		Edge(Point x, Point y, int weight) {
             this.source = x;
             this.destination = y;
+            this.weight = weight;
         }
     }
 
