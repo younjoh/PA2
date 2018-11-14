@@ -14,8 +14,8 @@ public class WGraph {
         Scanner scan = new Scanner(f);
         
         // Get # of vertices and edges
-        numVertices = Integer.parseInt(scan.next());
-        numEdges = Integer.parseInt(scan.nextLine());
+        this.numVertices = Integer.parseInt(scan.next());
+        this.numEdges = Integer.parseInt(scan.nextLine());
 
         while (scan.hasNext()){
             String check = scan.next();
@@ -23,23 +23,25 @@ public class WGraph {
         }
         
         scan.close();
+        System.out.println(this.numVertices);
+        System.out.println(this.numEdges);
     }
 
     private class Edge {
-        Point source = new Point(0,0);
-        Point destination = new Point(0,0);
-		Edge(Point x, Point y){
+        public Point source;
+        public Point destination;
+		Edge(Point x, Point y) {
             this.source = x;
             this.destination = y;
         }
     }
 
-    private class Point{
-        int x = 0;
-        int y = 0;
-        Point(int X, int Y){
-            this.x = X;
-            this.y = Y;
+    private class Point {
+        public int x;
+        public int y;
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 
