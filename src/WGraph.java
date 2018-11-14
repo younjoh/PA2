@@ -30,7 +30,7 @@ public class WGraph {
             
             // Ensure there are 5 numbers
             if (line.length != 5) {
-            	break;
+            	continue;
             }
             
             // Get coordinates and weight
@@ -56,8 +56,11 @@ public class WGraph {
     public void printGraph() {
     	for (int i = 0; i < this.numVertices ; i++) {
     		LinkedList<Edge> list = this.adjacencyList[i];
-    		for (int j = 0; j < list.size(); j++) {    			
-    			System.out.println(list.get(j));
+    		for (int j = 0; j < list.size(); j++) {
+    		    Point src = list.get(j).source;
+    		    Point dest = list.get(j).destination;
+    		    int weight = list.get(j).weight;
+    			System.out.println("(" + src.x + "," + src.y + ") connects to (" + dest.x + "," + dest.y + ") with weight " + weight);
     		}
         }
     }
