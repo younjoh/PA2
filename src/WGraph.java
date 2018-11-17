@@ -229,7 +229,6 @@ public class WGraph {
     }
 
     //This is the method from vertex to a set of vertices
-    @SuppressWarnings("Duplicates")
     ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
         //Made a HashSet to hold the vertices from the given Set
         HashSet<String> setPoints = new HashSet<String>();
@@ -357,7 +356,12 @@ public class WGraph {
         // Find the smallest path using sEnd as key
         System.out.println("Shortest weight: " + givenSetMinHeap.getKey(0));
         //END OF TEST
-        return (ArrayList<Integer>) givenSetMinHeap.getValue(0);
+        //Check to see if the path exists
+        ArrayList<Integer> check = new ArrayList<Integer>();
+        if(!givenSetMinHeap.isEmpty()){
+            check = (ArrayList<Integer>) givenSetMinHeap.getValue(0);
+        }
+        return check;
     }
 
 
