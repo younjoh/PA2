@@ -109,12 +109,9 @@ public class WGraph {
     }
 
     public ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
-    	// Holds the paths
-        HashMap<Integer, ArrayList<Integer>> hold = new HashMap<Integer, ArrayList<Integer>>();
-        
         // A path between a start and end node
-        ArrayList<Integer> path = new ArrayList<Integer>();
-        
+        ArrayList<Integer> [] path = new ArrayList[numVertices];
+
         // Initialize the start and end points
         Point start = new Point(ux, uy); // Point start
         String startString = PointToString(start); // String start
@@ -138,19 +135,20 @@ public class WGraph {
         
         // Create the pair for for the first index, 0 distance 0 index
         distance[0] = 0;
+
+        //Create the path for the first index, source point
+        path[0] = new ArrayList<Integer>();
+        path[0].add(start.x);
+        path[0].add(start.y);
         
         // Adding the start node to the heap
         minheap.add(start, 0);
         
-        // Adding the first point to the path
-        path.add(start.x);
-        path.add(start.y);
-        
         // Rearrange the source vertex to be in the front of the vertices
         String replace = vertices.get(0); // Get the first spot string
-        int Rspot = vertices.indexOf(startString); // Find where source is
+        int replaceIndex = vertices.indexOf(startString); // Find where source is
         vertices.set(0, startString); // Place source in front
-        vertices.set(Rspot, replace);// Swap replace and start
+        vertices.set(replaceIndex, replace);// Swap replace and start
 
         while(!minheap.isEmpty()){
             // Extracted vertex
@@ -158,7 +156,7 @@ public class WGraph {
             
             // Find string to check placement for extracted vertex
             String evString = PointToString(extractedVertex);
-            
+
             if(!SPT.contains(evString)) {
                 SPT.add(evString);
                 
@@ -169,54 +167,49 @@ public class WGraph {
                     Point destination = edge.destination;
                     // String form
                     String dest = PointToString(destination);
+
                     // Only if edge destination is not present in SPT
                     if (!SPT.contains(dest)) {
-                        int newKey =  distance[vertices.indexOf(evString)] + edge.weight ;
+                        ArrayList<Integer> newPath = new ArrayList<Integer>();
+
+                        int newKey =  distance[vertices.indexOf(evString)] + edge.weight;
+
+                        //Check to see if the ArrayList exists
+                        try{
+                            newPath = new ArrayList<Integer>(path[vertices.indexOf(evString)]);
+                        }
+                        catch(NullPointerException e){
+                            path[vertices.indexOf(evString)] = new ArrayList<Integer>();
+                            newPath = new ArrayList<Integer>(path[vertices.indexOf(evString)]);
+                        }
+
+                        //Adding the extra edge to the path
+                        newPath.add(destination.x);
+                        newPath.add(destination.y);
+
                         int currentKey = distance[vertices.indexOf(dest)];
                         
                         // If the path needs to be updated
                         if (currentKey>newKey) {
                         	
                         	// If key already exists
-                            if (placement.containsKey(dest)) { minheap.add(destination, newKey); }
+                            if (placement.containsKey(dest) && !dest.equals(end)) { minheap.add(destination, newKey); }
                             
                             distance[vertices.indexOf(dest)] = newKey;
-                            
-                            // Add to path
-                            path.add(destination.x);
-                            path.add(destination.y);
-                            
-                            // If it has reached the desired end point
-                            if (dest.equals(endString)) {
-                                hold.put(newKey, path);
-                                
-                                // Refresh path
-                                path = new ArrayList<Integer>();
-                                
-                                // Can't forget to add the start node
-                                path.add(start.x);
-                                path.add(start.y);
-                            }
-                            
-                            // No more neighbors, end point is not desired end points
-                            if (!placement.containsKey(dest) && !dest.equals(endString)) {
-                                // Refresh path
-                                path = new ArrayList<Integer>();
-                                
-                                // Can't forget to add the start node
-                                path.add(start.x);
-                                path.add(start.y);
-                            }
+                            path[vertices.indexOf(dest)] = new ArrayList<Integer>(newPath);
+
                         }
                     }
                 }
             }
         }
+        //TEST TEST TEST DELETE BEFORE TURNING IN PLEASE
         // Find the total cost of the end point
         int sEnd = distance[vertices.indexOf(endString)];
         // Find the smallest path using sEnd as key
         System.out.println(sEnd);
-        return hold.get(sEnd);
+        //END OF TEST
+        return path[vertices.indexOf(endString)];
     }
 
     public String PointToString(Point p) { //converting to string to find placement
