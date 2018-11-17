@@ -266,6 +266,7 @@ public class WGraph {
         // Initialize all the distance to infinity
         for (int i = 0; i < numVertices ; i++) {
             distance[i] = Integer.MAX_VALUE;
+            path[i] = new ArrayList<Integer>();
         }
 
         // The min heap for navigating through the graph
@@ -278,7 +279,6 @@ public class WGraph {
         distance[0] = 0;
 
         //Create the path for the first index, source point
-        path[0] = new ArrayList<Integer>();
         path[0].add(start.x);
         path[0].add(start.y);
 
@@ -316,14 +316,8 @@ public class WGraph {
 
                         int newKey =  distance[vertices.get(evString)] + edge.weight;
 
-                        //Check to see if the ArrayList exists
-                        try{
-                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
-                        }
-                        catch(NullPointerException e){
-                            path[vertices.get(evString)] = new ArrayList<Integer>();
-                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
-                        }
+                        //Get the new path
+                        newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
 
                         //Adding the extra edge to the path
                         newPath.add(destination.x);
@@ -362,6 +356,12 @@ public class WGraph {
             check = (ArrayList<Integer>) givenSetMinHeap.getValue(0);
         }
         return check;
+    }
+
+    //This method returns the smallest path. start point is from S1 and end point is in S2
+    @SuppressWarnings("Duplicates")
+    ArrayList<Integer> S2S(ArrayList<Integer> S1, ArrayList<Integer> S2){
+        return null;
     }
 
 
