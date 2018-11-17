@@ -7,8 +7,8 @@ public class WGraph {
     public LinkedList<Edge>[] adjacencyList;
     public int numVertices = 0;
     public int numEdges = 0;
-    public HashMap<String, Integer> placement = new HashMap<String, Integer>(); //Places in right spot of the Adj List
-    public ArrayList<String> vertices = new ArrayList<String>(); //Hold all vertices
+    public HashMap<String, Integer> placement = new HashMap<String, Integer>(); // Places in right spot of the Adj List
+    public ArrayList<String> vertices = new ArrayList<String>(); // Hold all vertices
 
     @SuppressWarnings("unchecked")
 	WGraph(String FName) throws FileNotFoundException {
@@ -49,20 +49,22 @@ public class WGraph {
             Point p1 = new Point(x1, y1);
             Point p2 = new Point(x2, y2);
             Edge edge = new Edge(p1, p2, weight);
-            //Holds all vertices
+            
+            // Holds all vertices
             String point1 = line[0] + line[1];
             String point2 = line[2] + line[3];
-            //for point 1
-            if(!vertices.contains(point1)){
+            
+            // For point 1
+            if (!vertices.contains(point1)) {
                 vertices.add(point1);
             }
-            //for point 2
-            if(!vertices.contains(point2)){
+            // For point 2
+            if (!vertices.contains(point2)) {
                 vertices.add(point2);
             }
 
-            //gathering all the vertices with children
-            if(!placement.containsKey(hold)){
+            // Gathering all the vertices with children
+            if (!placement.containsKey(hold)) {
                 placement.put(hold, count);
                 count = count + 1;
             }
@@ -107,77 +109,101 @@ public class WGraph {
     }
 
     public ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
-        HashMap<Integer, ArrayList<Integer>> hold = new HashMap<Integer, ArrayList<Integer>>(); //to hold the paths
-        ArrayList<Integer> path = new ArrayList<Integer>(); //A path from start to end points
-        //initalize the start and end points
-        Point start = new Point(ux, uy); //point start
-        String Sbegin = convert(start); // string start
-        Point finish = new Point(vx, vy); //point end
-        String end = convert(finish); //string finish
-        //Checking for visited
+    	// Holds the paths
+        HashMap<Integer, ArrayList<Integer>> hold = new HashMap<Integer, ArrayList<Integer>>();
+        
+        // A path between a start and end node
+        ArrayList<Integer> path = new ArrayList<Integer>();
+        
+        // Initialize the start and end points
+        Point start = new Point(ux, uy); // Point start
+        String startString = PointToString(start); // String start
+        
+        Point end = new Point(vx, vy); // Point end
+        String endString = PointToString(end); // String end
+        
+        // Checks for visited
         HashSet<String> SPT = new HashSet<String>();
-        //distance used to store the distance of vertex from a source
+        
+        // Distance used to store the distance of vertex from a source
         int [] distance = new int[numVertices];
-        //Initialize all the distance to infinity
+        
+        // Initialize all the distance to infinity
         for (int i = 0; i < numVertices ; i++) {
             distance[i] = Integer.MAX_VALUE;
         }
-        //The min heap
-        MinHeap m = new MinHeap();
-        //create the pair for for the first index, 0 distance 0 index
+        
+        // The min heap
+        MinHeap minheap = new MinHeap();
+        
+        // Create the pair for for the first index, 0 distance 0 index
         distance[0] = 0;
-        //adding the start node to the heap
-        m.add(start, 0);
-        // adding the first point to the path
+        
+        // Adding the start node to the heap
+        minheap.add(start, 0);
+        
+        // Adding the first point to the path
         path.add(start.x);
         path.add(start.y);
-        //Rearrange the source vertex to be in the front of the vertices
-        String replace = vertices.get(0); //Get the first spot string
-        int Rspot = vertices.indexOf(Sbegin); //find where source is
-        vertices.set(0, Sbegin); //place source in front
-        vertices.set(Rspot, replace);//Swap replace and start
-        //while minheap isn't empty
-        while(!m.isEmpty()){
-            //extracted vertex
-            Point extractedVertex = m.extractMin();
-            //find string to check placement for extracted vertex
-            String evString = convert(extractedVertex);
+        
+        // Rearrange the source vertex to be in the front of the vertices
+        String replace = vertices.get(0); // Get the first spot string
+        int Rspot = vertices.indexOf(startString); // Find where source is
+        vertices.set(0, startString); // Place source in front
+        vertices.set(Rspot, replace);// Swap replace and start
+
+        while(!minheap.isEmpty()){
+            // Extracted vertex
+            Point extractedVertex = minheap.extractMin();
+            
+            // Find string to check placement for extracted vertex
+            String evString = PointToString(extractedVertex);
+            
             if(!SPT.contains(evString)) {
                 SPT.add(evString);
-               //Go through the neighbors
+                
+                // Go through the neighbors
                 LinkedList<Edge> list = adjacencyList[placement.get(evString)];
                 for (int i = 0; i < list.size(); i++) {
                     Edge edge = list.get(i);
                     Point destination = edge.destination;
-                    //string form
-                    String dest = convert(destination);
-                    //only if edge destination is not present in spt
+                    // String form
+                    String dest = PointToString(destination);
+                    // Only if edge destination is not present in SPT
                     if (!SPT.contains(dest)) {
                         int newKey =  distance[vertices.indexOf(evString)] + edge.weight ;
                         int currentKey = distance[vertices.indexOf(dest)];
-                        //if the path needs to be updated
-                        if(currentKey>newKey){
-                            if(placement.containsKey(dest)) {
-                                m.add(destination, newKey);
-                            }
+                        
+                        // If the path needs to be updated
+                        if (currentKey>newKey) {
+                        	
+                        	// If key already exists
+                            if (placement.containsKey(dest)) { minheap.add(destination, newKey); }
+                            
                             distance[vertices.indexOf(dest)] = newKey;
-                            //add to path
+                            
+                            // Add to path
                             path.add(destination.x);
                             path.add(destination.y);
-                            //if it has reached the desired end point
-                            if(dest.equals(end)){
+                            
+                            // If it has reached the desired end point
+                            if (dest.equals(endString)) {
                                 hold.put(newKey, path);
-                                //refresh path
+                                
+                                // Refresh path
                                 path = new ArrayList<Integer>();
-                                //Can't forget to add the start node
+                                
+                                // Can't forget to add the start node
                                 path.add(start.x);
                                 path.add(start.y);
                             }
-                            //No more neighbors, end point is not desired end points
-                            if(!placement.containsKey(dest) && !dest.equals(end)){
-                                //refresh path
+                            
+                            // No more neighbors, end point is not desired end points
+                            if (!placement.containsKey(dest) && !dest.equals(endString)) {
+                                // Refresh path
                                 path = new ArrayList<Integer>();
-                                //Can't forget to add the start node
+                                
+                                // Can't forget to add the start node
                                 path.add(start.x);
                                 path.add(start.y);
                             }
@@ -186,14 +212,14 @@ public class WGraph {
                 }
             }
         }
-        //find the total cost of the end point
-        int sEnd = distance[vertices.indexOf(end)];
-        //find the smallest path using sEnd as key
-        System.out.print(sEnd + "\n");
+        // Find the total cost of the end point
+        int sEnd = distance[vertices.indexOf(endString)];
+        // Find the smallest path using sEnd as key
+        System.out.println(sEnd);
         return hold.get(sEnd);
     }
 
-    public String convert(Point p){ //converting to string to find placement
+    public String PointToString(Point p) { //converting to string to find placement
         return Integer.toString(p.x) + Integer.toString(p.y);
     }
 
