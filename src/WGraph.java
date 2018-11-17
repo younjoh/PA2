@@ -116,12 +116,25 @@ public class WGraph {
     }
 
     public ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
+        //Checks to make sure that the start node isn't the end node
+        ArrayList<Integer> quick = new ArrayList<Integer>();
+        if(ux == vx && uy == vy){
+            quick.add(ux);
+            quick.add(uy);
+            return quick;
+        }
+
         // A path between a start and end node
         ArrayList<Integer> [] path = new ArrayList[numVertices];
 
         // Initialize the start and end points
         Point start = new Point(ux, uy); // Point start
         String startString = PointToString(start); // String start
+
+        //Checks to see if a the source does not have any neighbors
+        if(!placement.containsKey(startString)){
+            return quick;
+        }
         
         Point end = new Point(vx, vy); // Point end
         String endString = PointToString(end); // String end
