@@ -8,7 +8,8 @@ public class WGraph {
     public int numVertices = 0;
     public int numEdges = 0;
     public HashMap<String, Integer> placement = new HashMap<String, Integer>(); // Places in right spot of the Adj List
-    public ArrayList<String> vertices = new ArrayList<String>(); // Hold all vertices
+    public HashMap<String, Integer> vertices = new HashMap<String, Integer>(); // Hold all vertices
+    public String firstVertex = " ";
 
     @SuppressWarnings("unchecked")
 	WGraph(String FName) throws FileNotFoundException {
@@ -24,9 +25,13 @@ public class WGraph {
         	this.adjacencyList[i] = new LinkedList<>();
         }
 
+        //give new integer for adjList
         int count = 0;
+
+        //give new integer for vertex list
+        int vCount = 0;
+
         while (scan.hasNextLine()) {
-            String hold = " ";
         	// Get next line
             String[] line = scan.nextLine().split(" ");
             
@@ -34,9 +39,6 @@ public class WGraph {
             if (line.length != 5) {
             	continue;
             }
-
-            //Update hold line
-            hold = line[0] + line[1];
 
             // Get coordinates and weight
             int x1 = Integer.parseInt(line[0]);
@@ -51,26 +53,31 @@ public class WGraph {
             Edge edge = new Edge(p1, p2, weight);
             
             // Holds all vertices
-            String point1 = line[0] + line[1];
-            String point2 = line[2] + line[3];
+            String point1 = line[0] + "," + line[1];
+            String point2 = line[2] + "," + line[3];
             
             // For point 1
-            if (!vertices.contains(point1)) {
-                vertices.add(point1);
+            if (!vertices.containsKey(point1)) {
+                if(vCount == 0){
+                    firstVertex = point1;
+                }
+                vertices.put(point1, vCount);
+                vCount = vCount + 1;
             }
             // For point 2
-            if (!vertices.contains(point2)) {
-                vertices.add(point2);
+            if (!vertices.containsKey(point2)) {
+                vertices.put(point2, vCount);
+                vCount = vCount + 1;
             }
 
             // Gathering all the vertices with children
-            if (!placement.containsKey(hold)) {
-                placement.put(hold, count);
+            if (!placement.containsKey(point1)) {
+                placement.put(point1, count);
                 count = count + 1;
             }
 
             // Add this to Adjacency list
-            this.adjacencyList[placement.get(hold)].addFirst(edge);
+            this.adjacencyList[placement.get(point1)].addFirst(edge);
 
         }
         scan.close();
@@ -145,10 +152,11 @@ public class WGraph {
         minheap.add(start, 0);
         
         // Rearrange the source vertex to be in the front of the vertices
-        String replace = vertices.get(0); // Get the first spot string
-        int replaceIndex = vertices.indexOf(startString); // Find where source is
-        vertices.set(0, startString); // Place source in front
-        vertices.set(replaceIndex, replace);// Swap replace and start
+        if(!vertices.get(startString).equals(0)){
+            int replaceKey = vertices.get(startString); //Get the value of the source
+            vertices.replace(startString, 0); //Set the source value to 0
+            vertices.replace(firstVertex, replaceKey); //Swap for the old source's vertex
+        }
 
         while(!minheap.isEmpty()){
             // Extracted vertex
@@ -172,22 +180,22 @@ public class WGraph {
                     if (!SPT.contains(dest)) {
                         ArrayList<Integer> newPath = new ArrayList<Integer>();
 
-                        int newKey =  distance[vertices.indexOf(evString)] + edge.weight;
+                        int newKey =  distance[vertices.get(evString)] + edge.weight;
 
                         //Check to see if the ArrayList exists
                         try{
-                            newPath = new ArrayList<Integer>(path[vertices.indexOf(evString)]);
+                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
                         }
                         catch(NullPointerException e){
-                            path[vertices.indexOf(evString)] = new ArrayList<Integer>();
-                            newPath = new ArrayList<Integer>(path[vertices.indexOf(evString)]);
+                            path[vertices.get(evString)] = new ArrayList<Integer>();
+                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
                         }
 
                         //Adding the extra edge to the path
                         newPath.add(destination.x);
                         newPath.add(destination.y);
 
-                        int currentKey = distance[vertices.indexOf(dest)];
+                        int currentKey = distance[vertices.get(dest)];
                         
                         // If the path needs to be updated
                         if (currentKey>newKey) {
@@ -195,8 +203,8 @@ public class WGraph {
                         	// If key already exists
                             if (placement.containsKey(dest) && !dest.equals(end)) { minheap.add(destination, newKey); }
                             
-                            distance[vertices.indexOf(dest)] = newKey;
-                            path[vertices.indexOf(dest)] = new ArrayList<Integer>(newPath);
+                            distance[vertices.get(dest)] = newKey;
+                            path[vertices.get(dest)] = new ArrayList<Integer>(newPath);
 
                         }
                     }
@@ -205,15 +213,21 @@ public class WGraph {
         }
         //TEST TEST TEST DELETE BEFORE TURNING IN PLEASE
         // Find the total cost of the end point
-        int sEnd = distance[vertices.indexOf(endString)];
+        int sEnd = distance[vertices.get(endString)];
         // Find the smallest path using sEnd as key
         System.out.println(sEnd);
         //END OF TEST
-        return path[vertices.indexOf(endString)];
+        return path[vertices.get(endString)];
     }
 
+    ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
+
+        return null;
+    }
+
+
     public String PointToString(Point p) { //converting to string to find placement
-        return Integer.toString(p.x) + Integer.toString(p.y);
+        return Integer.toString(p.x) + "," + Integer.toString(p.y);
     }
 
 }
