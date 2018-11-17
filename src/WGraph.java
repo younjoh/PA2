@@ -173,6 +173,14 @@ public class WGraph {
                                 path.add(start.x);
                                 path.add(start.y);
                             }
+                            //No more neighbors, end point is not desired end points
+                            if(!placement.containsKey(dest) && !dest.equals(end)){
+                                //refresh path
+                                path = new ArrayList<Integer>();
+                                //Can't forget to add the start node
+                                path.add(start.x);
+                                path.add(start.y);
+                            }
                         }
                     }
                 }
