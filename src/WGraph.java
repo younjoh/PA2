@@ -215,7 +215,7 @@ public class WGraph {
         // Find the total cost of the end point
         int sEnd = distance[vertices.get(endString)];
         // Find the smallest path using sEnd as key
-        System.out.println(sEnd);
+        System.out.println("Shortest weight: " + sEnd);
         //END OF TEST
         return path[vertices.get(endString)];
     }

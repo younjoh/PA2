@@ -7,7 +7,7 @@ public class Main {
 		//graph.printGraph();
 		ArrayList<Integer> v2v = graph.V2V(5,6,1,2);
 		for(int i = 0; i < v2v.size(); i++){
-			System.out.print(v2v.get(i));
+			System.out.print("Shortest path: " + v2v.get(i));
 		}
 	}
 }
