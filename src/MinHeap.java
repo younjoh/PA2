@@ -12,7 +12,7 @@ public class MinHeap {
     }
 
     // Adds a string s with priority p to the priority queue
-    public void add (WGraph.Point s, int p) {
+    public void add (Object s, int p) {
         Node t = new Node(s, p); // Making a new node with given s and p
         A.add(t); // Adding node
         Up(A, A.size() - 1); // Finding nodes rightful spot
@@ -20,16 +20,16 @@ public class MinHeap {
     }
     
     // Returns string with highest priority
-    public WGraph.Point returnMin() { 
+    public Object returnMin() {
         if (isEmpty()) { return null; }
         Node t = A.get(0); // Gets highest priority
         return t.y;
     }
  
     // returnMin but it removes the node as well
-    public WGraph.Point extractMin() { 
+    public Object extractMin() {
         if (isEmpty()) { return null; }
-        WGraph.Point temp = A.get(0).y; // Max string
+        Object temp = A.get(0).y; // Max string
         A.set(0, A.get(A.size() - 1)); // Set last element in starting
         A.remove(A.size() - 1); // Removes last element
         heapify(A, A.size(), 0); // Finds rightful spot for root
@@ -77,11 +77,11 @@ public class MinHeap {
         catch (IndexOutOfBoundsException e) {
             System.out.println("This index is out of bounds");
         }
-        return pp; // Returns key(A[i]), where A is the array used to represent the priority queue
+        return pp; // Gets the priority
     }
     
-    public WGraph.Point getValue (int i){
-        WGraph.Point pp = null;
+    public Object getValue (int i){
+        Object pp = null;
         try {
             // i = i - 1;
             pp = A.get(i).y;
@@ -89,7 +89,7 @@ public class MinHeap {
         catch(IndexOutOfBoundsException e){
             System.out.println("This index is out of bounds");
         }
-        return pp; //Returns key(A[i]), where A is the array used to represent the priority queue
+        return pp; //Gets the object
     }
 
     public Boolean isEmpty() { return n == 0; }
@@ -143,9 +143,9 @@ public class MinHeap {
     }
 
     private class Node {
-        WGraph.Point y;
+        Object y;
         int p;
-        Node(WGraph.Point value, int priority){
+        Node(Object value, int priority){
             this.y = value;
             this.p = priority;
         }

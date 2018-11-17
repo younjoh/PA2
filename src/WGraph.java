@@ -115,6 +115,7 @@ public class WGraph {
         }
     }
 
+    //From vertex to vertex
     public ArrayList<Integer> V2V(int ux, int uy, int vx, int vy){
         //Checks to make sure that the start node isn't the end node
         ArrayList<Integer> quick = new ArrayList<Integer>();
@@ -148,6 +149,7 @@ public class WGraph {
         // Initialize all the distance to infinity
         for (int i = 0; i < numVertices ; i++) {
             distance[i] = Integer.MAX_VALUE;
+            path[i] = new ArrayList<Integer>();
         }
         
         // The min heap
@@ -157,7 +159,6 @@ public class WGraph {
         distance[0] = 0;
 
         //Create the path for the first index, source point
-        path[0] = new ArrayList<Integer>();
         path[0].add(start.x);
         path[0].add(start.y);
         
@@ -173,7 +174,7 @@ public class WGraph {
 
         while(!minheap.isEmpty()){
             // Extracted vertex
-            Point extractedVertex = minheap.extractMin();
+            Point extractedVertex = (Point) minheap.extractMin();
             
             // Find string to check placement for extracted vertex
             String evString = PointToString(extractedVertex);
@@ -195,14 +196,8 @@ public class WGraph {
 
                         int newKey =  distance[vertices.get(evString)] + edge.weight;
 
-                        //Check to see if the ArrayList exists
-                        try{
-                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
-                        }
-                        catch(NullPointerException e){
-                            path[vertices.get(evString)] = new ArrayList<Integer>();
-                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
-                        }
+                        //Get the new path
+                        newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
 
                         //Adding the extra edge to the path
                         newPath.add(destination.x);
@@ -233,9 +228,136 @@ public class WGraph {
         return path[vertices.get(endString)];
     }
 
+    //This is the method from vertex to a set of vertices
+    @SuppressWarnings("Duplicates")
     ArrayList<Integer> V2S(int ux, int uy, ArrayList<Integer> S){
+        //Made a HashSet to hold the vertices from the given Set
+        HashSet<String> setPoints = new HashSet<String>();
+        for(int i = 0; i < S.size(); i = i + 2){
+            String stringPoint = Integer.toString(S.get(i)) + "," + Integer.toString(S.get(i + 1));
+            setPoints.add(stringPoint);
+        }
 
-        return null;
+        // A path between a start and end node
+        ArrayList<Integer> [] path = new ArrayList[numVertices];
+
+        // Initialize the start and end points
+        Point start = new Point(ux, uy); // Point start
+        String startString = PointToString(start); // String start
+
+        //Checks to make sure that the start node isn't the end node
+        ArrayList<Integer> quick = new ArrayList<Integer>();
+        if(setPoints.contains(startString)){
+            quick.add(ux);
+            quick.add(uy);
+            return quick;
+        }
+
+        //Checks to see if a the source does not have any neighbors
+        if(!placement.containsKey(startString)){
+            return quick;
+        }
+
+        // Checks for visited
+        HashSet<String> SPT = new HashSet<String>();
+
+        // Distance used to store the distance of vertex from a source
+        int [] distance = new int[numVertices];
+
+        // Initialize all the distance to infinity
+        for (int i = 0; i < numVertices ; i++) {
+            distance[i] = Integer.MAX_VALUE;
+        }
+
+        // The min heap for navigating through the graph
+        MinHeap minheap = new MinHeap();
+
+        //The min heap for holding the smallest paths that are in the given set
+        MinHeap givenSetMinHeap = new MinHeap();
+
+        // Create the pair for for the first index, 0 distance 0 index
+        distance[0] = 0;
+
+        //Create the path for the first index, source point
+        path[0] = new ArrayList<Integer>();
+        path[0].add(start.x);
+        path[0].add(start.y);
+
+        // Adding the start node to the heap
+        minheap.add(start, 0);
+
+        // Rearrange the source vertex to be in the front of the vertices
+        if(!vertices.get(startString).equals(0)){
+            int replaceKey = vertices.get(startString); //Get the value of the source
+            vertices.replace(startString, 0); //Set the source value to 0
+            vertices.replace(firstVertex, replaceKey); //Swap for the old source's vertex
+        }
+
+        while(!minheap.isEmpty()){
+            // Extracted vertex
+            Point extractedVertex = (Point) minheap.extractMin();
+
+            // Find string to check placement for extracted vertex
+            String evString = PointToString(extractedVertex);
+
+            if(!SPT.contains(evString)) {
+                SPT.add(evString);
+
+                // Go through the neighbors
+                LinkedList<Edge> list = adjacencyList[placement.get(evString)];
+                for (int i = 0; i < list.size(); i++) {
+                    Edge edge = list.get(i);
+                    Point destination = edge.destination;
+                    // String form
+                    String dest = PointToString(destination);
+
+                    // Only if edge destination is not present in SPT
+                    if (!SPT.contains(dest)) {
+                        ArrayList<Integer> newPath = new ArrayList<Integer>();
+
+                        int newKey =  distance[vertices.get(evString)] + edge.weight;
+
+                        //Check to see if the ArrayList exists
+                        try{
+                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
+                        }
+                        catch(NullPointerException e){
+                            path[vertices.get(evString)] = new ArrayList<Integer>();
+                            newPath = new ArrayList<Integer>(path[vertices.get(evString)]);
+                        }
+
+                        //Adding the extra edge to the path
+                        newPath.add(destination.x);
+                        newPath.add(destination.y);
+
+                        int currentKey = distance[vertices.get(dest)];
+
+                        // If the path needs to be updated
+                        if (currentKey>newKey) {
+
+                            // If key already exists
+                            if (placement.containsKey(dest)) { minheap.add(destination, newKey); }
+
+                            //Update paths and weight for the smallest path
+                            distance[vertices.get(dest)] = newKey;
+                            path[vertices.get(dest)] = new ArrayList<Integer>(newPath);
+
+                            //if updated path's endpoint exists in set, add it to minheap
+                            if(setPoints.contains(dest)){
+                                givenSetMinHeap.add(newPath, newKey);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        //TEST TEST TEST DELETE BEFORE TURNING IN PLEASE
+        // Find the smallest path using sEnd as key
+        System.out.println("Shortest weight: " + givenSetMinHeap.getKey(0));
+        //END OF TEST
+        return (ArrayList<Integer>) givenSetMinHeap.getValue(0);
     }
 
 
