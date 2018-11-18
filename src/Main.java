@@ -5,11 +5,14 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		WGraph graph = new WGraph("C:\\Users\\jackc\\coms311\\Prog2\\PA2\\src\\FName.txt");
 		//graph.printGraph();
-		/*ArrayList<Integer> v2v = graph.V2V(1,2,5,6);
+		/*//Testing for v2v
+		ArrayList<Integer> v2v = graph.V2V(5,6,8, 9);
 		System.out.print("Shortest path: ");
 		for(int i = 0; i < v2v.size(); i++){
 			System.out.print(v2v.get(i));
 		}*/
+
+		/*//Testing for v2S
 		ArrayList<Integer> testSet = new ArrayList<Integer>();
 		testSet.add(3);
 		testSet.add(4);
@@ -21,6 +24,27 @@ public class Main {
 
 		for(int i = 0; i < v2S.size(); i++){
 			System.out.print(v2S.get(i));
+		}*/
+
+		ArrayList<Integer> testSet = new ArrayList<Integer>();
+		testSet.add(1);
+		testSet.add(2);
+		testSet.add(8);
+		testSet.add(9);
+
+		ArrayList<Integer> testSet2 = new ArrayList<Integer>();
+		testSet2.add(3);
+		testSet2.add(4);
+		testSet2.add(5);
+		testSet2.add(6);
+		testSet2.add(7);
+		testSet2.add(8);
+
+		ArrayList<Integer> s2s = graph.S2S(testSet, testSet2);
+		System.out.print("Shortest path: ");
+
+		for(int i = 0; i < s2s.size(); i++){
+			System.out.print(s2s.get(i));
 		}
 
 
