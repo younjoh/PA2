@@ -397,6 +397,9 @@ public class WGraph {
         System.out.println("Shortest weight: " + sEnd);
         //END OF TEST
 
+        if(returnedPath.isEmpty()){
+            return returnedPath;
+        }
         //remove dummy node A and B
         returnedPath.remove(0);
         returnedPath.remove(0);

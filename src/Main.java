@@ -27,16 +27,14 @@ public class Main {
 		}*/
 
 		ArrayList<Integer> testSet = new ArrayList<Integer>();
-		testSet.add(1);
-		testSet.add(2);
+		testSet.add(5);
+		testSet.add(6);
 		testSet.add(8);
 		testSet.add(9);
 
 		ArrayList<Integer> testSet2 = new ArrayList<Integer>();
 		testSet2.add(3);
 		testSet2.add(4);
-		testSet2.add(5);
-		testSet2.add(6);
 		testSet2.add(7);
 		testSet2.add(8);
 
