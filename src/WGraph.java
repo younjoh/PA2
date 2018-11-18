@@ -78,6 +78,86 @@ public class WGraph {
         }
         scan.close();
     }
+
+    //for part 2
+    WGraph(ArrayList<ArrayList<Integer>> matrix){
+        numVertices = matrix.size() * matrix.get(0).size();
+        this.adjacencyList = new LinkedList[numVertices];
+        for (int i = 0; i < numVertices; i++) {
+            this.adjacencyList[i] = new LinkedList<>();
+        }
+
+        for(int i = 0; i < matrix.size(); i++){
+            ArrayList<Integer> inner = new ArrayList<>(matrix.get(i));
+            for( int j = 0; j < inner.size(); j++){
+                //Set up the first vertex
+                if(i == 0 && j == 0){
+                    firstVertex = "0,0";
+                }
+
+                //Get the string source
+                String source = Integer.toString(i) + "," + Integer.toString(j);
+
+                //add to vertex table
+                vertices.put(source, vCount);
+                vCount += 1;
+
+                //add to placement table
+                if(j!=inner.size() - 1 && !placement.containsKey(source)){
+                    placement.put(source, placeCount);
+                    placeCount += 1;
+                }
+
+                // Make points and edge
+                Point p1 = new Point(i, j);
+                Point p2;
+                Point p3;
+                Point p4;
+
+                //for i being on the top
+                if(i == 0 && j != inner.size() - 1){ //directly to right and diagonal right
+                    p2 = new Point(i, j + 1); //to the right
+                    p3 = new Point(i + 1, j + 1); // diagonal right
+                    Edge edge = new Edge(p1, p2, (inner.get(j) + matrix.get(i).get(j + 1)));
+                    Edge edge2 = new Edge(p1, p3, (inner.get(j) + matrix.get(i + 1).get(j + 1)));
+
+                    // Add this to Adjacency list
+                    this.adjacencyList[placement.get(source)].addFirst(edge);
+                    this.adjacencyList[placement.get(source)].addFirst(edge2);
+                }
+
+                //for i being in the middle
+                else if(i != 0 && j != inner.size() - 1 && i != matrix.size() - 1){ //up right, right, bottom right
+                    p2 = new Point(i - 1, j + 1); //up right
+                    p3 = new Point(i, j + 1); // to the right
+                    p4 = new Point(i + 1, j + 1); //bottom right
+                    Edge edge = new Edge(p1, p2, (inner.get(j) + matrix.get(i - 1).get(j + 1)));
+                    Edge edge2 = new Edge(p1, p3, (inner.get(j) + matrix.get(i).get(j + 1)));
+                    Edge edge3 = new Edge(p1, p4, (inner.get(j) + matrix.get(i + 1).get(j + 1)));
+
+                    // Add this to Adjacency list
+                    this.adjacencyList[placement.get(source)].addFirst(edge);
+                    this.adjacencyList[placement.get(source)].addFirst(edge2);
+                    this.adjacencyList[placement.get(source)].addFirst(edge3);
+                }
+
+                //for i being on the bottom
+                if(i == matrix.size() - 1 && j != inner.size() - 1){ //up right, right
+                    p2 = new Point(i, j + 1); //to the right
+                    p3 = new Point(i - 1, j + 1); // up right
+                    Edge edge = new Edge(p1, p2, (inner.get(j) + matrix.get(i).get(j + 1)));
+                    Edge edge2 = new Edge(p1, p3, (inner.get(j) + matrix.get(i - 1).get(j + 1)));
+
+                    // Add this to Adjacency list
+                    this.adjacencyList[placement.get(source)].addFirst(edge);
+                    this.adjacencyList[placement.get(source)].addFirst(edge2);
+                }
+
+
+            }
+        }
+    }
+
     
     public void printGraph() {
     	for (int i = 0; i < this.numVertices ; i++) {
