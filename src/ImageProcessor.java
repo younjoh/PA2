@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -65,7 +66,76 @@ public class ImageProcessor {
     }
 
     void writeReduced(int k, String FName){
+        ArrayList<ArrayList<Integer>> temp = new ArrayList<ArrayList<Integer>>(this.getImportance());
+        WGraph graph;
+        Pixel[][] t = new Pixel[this.height][this.width];
+        ArrayList<ArrayList<Integer>> holdSets;
 
+        for (int i = 0; i < k; i++){
+            holdSets = new ArrayList<ArrayList<Integer>>(getSets(temp)); //get Sets
+            graph = new WGraph(temp); // get graph
+            ArrayList<Integer> cutPath = new ArrayList<Integer>(graph.S2S(holdSets.get(0), holdSets.get(1))); //get smallest path to cut
+            t = removePath(this.pixelMap, cutPath); //remove vertical path
+            this.pixelMap = t;
+            getImportance();
+            temp = new ArrayList<ArrayList<Integer>>(this.getImportance());
+        }
+    }
+
+    //get the two sets
+    private ArrayList<ArrayList<Integer>> getSets(ArrayList<ArrayList<Integer>> temp){
+        ArrayList<Integer> set1 = new ArrayList<>();
+        ArrayList<Integer> set2 = new ArrayList<>();
+
+        ArrayList<ArrayList<Integer>> twoSets = new ArrayList<ArrayList<Integer>>();
+        twoSets.add(new ArrayList<Integer>());
+        twoSets.add(new ArrayList<Integer>());
+
+        for(int x = 0; x < temp.size(); x++){
+            ArrayList<Integer> inner = temp.get(x);
+            for(int y = 0; y < inner.size(); y++){
+                if(y == 0){
+                    set1.add(inner.get(y)); //add to set 1
+                }
+                if(y == inner.size() - 1){
+                    set2.add(inner.get(y)); //add to set 2
+                }
+            }
+        }
+        twoSets.set(0, new ArrayList<>(set1));
+        twoSets.set(1,new ArrayList<>(set2));
+        return twoSets;
+    }
+
+    //removes the certain path
+    public Pixel[][] removePath(Pixel[][] matrix, ArrayList<Integer> path){
+        int oldWidth = this.width;
+        this.width = this.width - 1;
+        Pixel[][] newMatrix = new Pixel[this.height][this.width];
+        ArrayList<ArrayList<Pixel>> pickle = new ArrayList<ArrayList<Pixel>>();
+        for(int i = 0; i < this.width; i++){
+            pickle.add(new ArrayList<Pixel>());
+        }
+        HashSet<String> copyPath = new HashSet<>();
+        for(int count = 0; count < path.size(); count += 2){
+            String set = path.get(count) + "," + path.get(count + 1);
+            copyPath.add(set);
+        }
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < oldWidth; j++){
+                String check = i + "," + j;
+                if(!copyPath.contains(check)){
+                    pickle.get(j).add(newMatrix[i][j]);
+                }
+            }
+        }
+
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < oldWidth - 1; j++){
+                newMatrix[i][j] = pickle.get(i).get(j);
+            }
+        }
+        return newMatrix;
     }
 
 
