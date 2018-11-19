@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,6 +63,7 @@ public class ImageProcessor {
         }
 
         this.PrintImportanceMap(importance);
+        System.out.println();
 
         return importanceMap;
     }
@@ -80,6 +83,18 @@ public class ImageProcessor {
             getImportance();
             temp = new ArrayList<ArrayList<Integer>>(this.getImportance());
         }
+        
+        PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(FName, "UTF-8");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        this.PrintPixelMap();
+        
+        writer.write("string");
     }
 
     //get the two sets

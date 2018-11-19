@@ -44,22 +44,21 @@ public class Main {
 //		for(int i = 0; i < s2s.size(); i++){
 //			System.out.print(s2s.get(i));
 //		}
-	ImageProcessor ip = new ImageProcessor("C:\\Users\\jackc\\coms311\\Prog2\\PA2\\src\\image.txt");
-
-	ip.PrintPixelMap();
-
-	ArrayList<ArrayList<Integer>> t = ip.getImportance();
-
-	WGraph wGraph = new WGraph(t);
-
-	for(int i = 0; i < t.size(); i++){
-		for(int j = 0; j < t.get(i).size(); j++){
-			System.out.print(t.get(i).get(j) + " ");
-		}
-		System.out.println();
-	}
-
-	wGraph.printGraph();
+	ImageProcessor ip = new ImageProcessor("C:\\Users\\Sean\\Documents\\311\\PA2\\PA2\\src\\test.txt");
+	ip.writeReduced(1, "dddd");
+	
+//	ArrayList<ArrayList<Integer>> t = ip.getImportance();
+//
+//	WGraph wGraph = new WGraph(t);
+//
+//	for(int i = 0; i < t.size(); i++){
+//		for(int j = 0; j < t.get(i).size(); j++){
+//			System.out.print(t.get(i).get(j) + " ");
+//		}
+//		System.out.println();
+//	}
+//
+//	wGraph.printGraph();
 
 	}
 }
