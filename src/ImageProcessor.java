@@ -75,6 +75,7 @@ public class ImageProcessor {
         ArrayList<ArrayList<Integer>> holdSets;
 
         for (int i = 0; i < k; i++){
+        	this.PrintPixelMap();
             holdSets = new ArrayList<ArrayList<Integer>>(getSets(temp)); //get Sets
             graph = new WGraph(temp); // get graph
             ArrayList<Integer> cutPath = new ArrayList<Integer>(graph.S2S(holdSets.get(0), holdSets.get(1))); //get smallest path to cut
@@ -94,7 +95,19 @@ public class ImageProcessor {
 		}
         this.PrintPixelMap();
         
-        writer.write("string");
+        writer.println(this.height);
+        writer.println(this.width);
+        
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                Pixel p = this.pixelMap[i][j];
+                writer.print(p.r + " " + p.g + " " + p.b + " ");
+            }
+            writer.println();
+        }
+        
+        
+        writer.close();
     }
 
     //get the two sets
