@@ -126,30 +126,36 @@ public class ImageProcessor {
 
     //removes the certain path
     public Pixel[][] removePath(Pixel[][] matrix, ArrayList<Integer> path){
-        int oldWidth = this.width;
         this.width = this.width - 1;
         Pixel[][] newMatrix = new Pixel[this.height][this.width];
         ArrayList<ArrayList<Pixel>> pickle = new ArrayList<ArrayList<Pixel>>();
+
         for(int i = 0; i < this.width; i++){
             pickle.add(new ArrayList<Pixel>());
         }
+
         HashSet<String> copyPath = new HashSet<>();
+
         for(int count = 0; count < path.size(); count += 2){
             String set = path.get(count) + "," + path.get(count + 1);
             copyPath.add(set);
         }
+
         for(int i = 0; i < this.height; i++){
-            for(int j = 0; j < oldWidth; j++){
+            for(int j = 0; j < this.width; j++){
                 String check = i + "," + j;
-                if(!copyPath.contains(check)){
-                    pickle.get(j).add(newMatrix[i][j]);
+                if(copyPath.contains(check)){
+                    pickle.get(j).add(matrix[i][j + 1]);
+                }
+                else{
+                    pickle.get(j).add(matrix[i][j]);
                 }
             }
         }
 
         for(int i = 0; i < this.height; i++){
-            for(int j = 0; j < oldWidth - 1; j++){
-                newMatrix[i][j] = pickle.get(i).get(j);
+            for(int j = 0; j < this.width; j++){
+                newMatrix[i][j] = pickle.get(j).get(i);
             }
         }
         return newMatrix;
