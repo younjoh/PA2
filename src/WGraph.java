@@ -523,6 +523,7 @@ public class WGraph {
                         newPath.add(destination.x);
                         newPath.add(destination.y);
 
+                        int test = vertices.get(dest);
                         int currentKey = distance[vertices.get(dest)];
 
                         // If the path needs to be updated

@@ -44,7 +44,7 @@ public class Main {
 //		for(int i = 0; i < s2s.size(); i++){
 //			System.out.print(s2s.get(i));
 //		}
-	ImageProcessor ip = new ImageProcessor("C:\\Users\\Sean\\Documents\\311\\PA2\\PA2\\src\\test.txt");
+	ImageProcessor ip = new ImageProcessor("C:\\Users\\jackc\\OneDrive\\Desktop\\test.txt");
 	ip.writeReduced(1, "dddd");
 	
 //	ArrayList<ArrayList<Integer>> t = ip.getImportance();
