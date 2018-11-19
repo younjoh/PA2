@@ -110,10 +110,12 @@ public class ImageProcessor {
             ArrayList<Integer> inner = temp.get(x);
             for(int y = 0; y < inner.size(); y++){
                 if(y == 0){
-                    set1.add(inner.get(y)); //add to set 1
+                    set1.add(x); //add to set 1
+                    set1.add(y);
                 }
                 if(y == inner.size() - 1){
-                    set2.add(inner.get(y)); //add to set 2
+                    set2.add(x); //add to set 2
+                    set2.add(y);
                 }
             }
         }
